@@ -1,4 +1,11 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  BaseEntity,
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity('user_details')
 export class UserDetails extends BaseEntity {
@@ -17,10 +24,10 @@ export class UserDetails extends BaseEntity {
   @Column({ type: 'varchar', nullable: false, default: 'ACTIVE', length: 8 })
   status: string;
 
-  @Column({ type: 'timestamp', name: 'created_at' })
+  @CreateDateColumn({ type: 'timestamp', name: 'created_at' })
   createdAt: Date;
 
-  @Column({
+  @UpdateDateColumn({
     type: 'timestamp',
     name: 'updated_at',
     default: () => 'CURRENT_TIMESTAMP',

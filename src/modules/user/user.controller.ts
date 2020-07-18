@@ -7,43 +7,49 @@ import {
   Patch,
   Delete,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { UserDto } from './dto/user.dto';
+import { ReadUserDto, UpdateUserDto } from './dto';
+import { AuthGuard } from '@nestjs/passport';
+import { Roles } from '../role/decorators/role.decorator';
+import { RoleGuard } from '../role/guards/role.guard';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly _userService: UserService) {}
 
   @Get(':id')
-  async getUser(@Param('id', ParseIntPipe) id: number): Promise<UserDto> {
-    const userDto = await this._userService.getById(id);
-    return userDto;
+  GetUser(@Param('id', ParseIntPipe) id: number): Promise<ReadUserDto> {
+    return this._userService.getById(id);
   }
 
+  //@UseGuards(AuthGuard('jwt'))
   @Get()
-  async GetUsers(): Promise<UserDto[]> {
-    const usersDto = await this._userService.getAll();
-    return usersDto;
-  }
-
-  @Post()
-  async createUser(@Body() userDto: UserDto): Promise<UserDto> {
-    const createUser = await this._userService.create(userDto);
-    return createUser;
+  @Roles('ADMIN', 'GENERAL')
+  @UseGuards(AuthGuard(), RoleGuard)
+  GetUsers(): Promise<ReadUserDto[]> {
+    return this._userService.getAll();
   }
 
   @Patch(':id')
-  async updateUser(
+  UpdateUser(
     @Param('id', ParseIntPipe) id: number,
-    @Body() userDto: UserDto,
+    @Body() userDto: UpdateUserDto,
   ) {
-    await this._userService.update(id, userDto);
+    return this._userService.update(id, userDto);
   }
 
   @Delete(':id')
-  async deleteUser(@Param('id', ParseIntPipe) id: number) {
-    await this._userService.delete(id);
-    return true;
+  DeleteUser(@Param('id', ParseIntPipe) id: number): Promise<boolean> {
+    return this._userService.delete(id);
+  }
+
+  @Post('setRole/:userId/:roleId')
+  SetRoleToUser(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Param('roleId', ParseIntPipe) roleId: number,
+  ): Promise<Boolean> {
+    return this._userService.SetRoleToUser(userId, roleId);
   }
 }

@@ -17,7 +17,7 @@ export class RoleController {
   constructor(private readonly _roleService: RoleService) {}
 
   @Get(':id')
-  getRole(@Param('id', ParseIntPipe) id: number): Promise<ReadRoleDto> {
+  GetRole(@Param('id', ParseIntPipe) id: number): Promise<ReadRoleDto> {
     return this._roleService.GetById(id);
   }
 
@@ -27,12 +27,12 @@ export class RoleController {
   }
 
   @Post()
-  createRole(@Body() role: Partial<CreateRoleDto>): Promise<ReadRoleDto> {
+  CreateRole(@Body() role: Partial<CreateRoleDto>): Promise<ReadRoleDto> {
     return this._roleService.Create(role);
   }
 
   @Patch(':id')
-  updateRole(
+  UpdateRole(
     @Param('id', ParseIntPipe) id: number,
     @Body() userDto: Role,
   ): Promise<ReadRoleDto> {
@@ -40,7 +40,7 @@ export class RoleController {
   }
 
   @Delete(':id')
-  deleteRole(@Param('id', ParseIntPipe) id: number) {
+  DeleteRole(@Param('id', ParseIntPipe) id: number) {
     this._roleService.Delete(id);
     return true;
   }

@@ -1,12 +1,16 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserRepository } from './user.repository';
-import { SharedModule } from '../../shared/shared.module';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
+import { RoleRepository } from '../role/role.repository';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserRepository]), SharedModule],
+  imports: [
+    TypeOrmModule.forFeature([UserRepository, RoleRepository]),
+    AuthModule,
+  ],
   providers: [UserService],
   controllers: [UserController],
 })
